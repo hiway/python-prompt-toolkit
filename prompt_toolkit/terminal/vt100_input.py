@@ -462,7 +462,10 @@ class raw_mode(object):
             termios.tcsetattr(self.fileno, termios.TCSANOW, newattr)
 
             # Put the terminal in cursor mode. (Instead of application mode.)
-            os.write(self.fileno, b'\x1b[?1l')
+            try:
+                os.write(self.fileno, b'\x1b[?1l')
+            except BlockingIOError:
+                pass
 
     @classmethod
     def _patch_lflag(cls, attrs):

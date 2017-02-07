@@ -596,8 +596,10 @@ class Vt100_Output(Output):
                 out.write(data.encode(self.stdout.encoding or 'utf-8', 'replace'))
             else:
                 self.stdout.write(data)
-
-            self.stdout.flush()
+            try:
+                self.stdout.flush()
+            except BlockingIOError:
+                pass
         except IOError as e:
             if e.args and e.args[0] == errno.EINTR:
                 # Interrupted system call. Can happpen in case of a window
